@@ -44,6 +44,8 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
       keynote_update_ui(iter);
     } else if (!strcmp("PowerPoint", app->value->cstring)) {
       powerpoint_update_ui(iter);
+    } else if (!strcmp("PDF", app->value->cstring)) {
+      pdf_update_ui(iter);
     } else if (!strcmp("System", app->value->cstring)) {
       system_update_ui(iter);
     }

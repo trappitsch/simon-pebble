@@ -51,6 +51,10 @@ void spotify_update_ui(DictionaryIterator *iter);
 void keynote_control();
 void keynote_update_ui(DictionaryIterator *iter);
 
+/* PDF */
+void pdf_control();
+void pdf_update_ui(DictionaryIterator *iter);
+
 /* System */
 void system_control();
 void system_update_ui(DictionaryIterator *iter);

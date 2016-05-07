@@ -6,7 +6,7 @@ bool wsConnected;
 #define NUM_MENU_ROWS (NUM_MUSIC_MENU_ITEMS + NUM_PRESENTATION_MENU_ITEMS + NUM_OTHER_MENU_ITEMS)
 
 #define NUM_MUSIC_MENU_ITEMS 2
-#define NUM_PRESENTATION_MENU_ITEMS 2
+#define NUM_PRESENTATION_MENU_ITEMS 3
 #define NUM_OTHER_MENU_ITEMS 1
 
 static Window *window;
@@ -87,6 +87,9 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
         case 1:
           menu_cell_basic_draw(ctx, cell_layer, "Keynote", NULL, NULL);
           break;
+        case 2:
+          menu_cell_basic_draw(ctx, cell_layer, "PDF", NULL, NULL);
+          break;
       }
       break;
     case 2:
@@ -122,6 +125,9 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
           break;
         case 1:
           keynote_control();
+          break;
+        case 2:
+          pdf_control();
           break;
       }
       break;

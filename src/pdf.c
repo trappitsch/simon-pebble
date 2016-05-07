@@ -56,11 +56,11 @@ static bool refresh_icon_showing;
 
 static bool has_loaded = false;
 
-void keynote_init(void) {
+void pdf_init(void) {
   slide_progress_text = malloc(20);
   time_text = malloc(10);
 
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window - Keynote init %p", window);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window - PDF init %p", window);
 
   position = 1;
   duration = 1;
@@ -92,8 +92,8 @@ void keynote_init(void) {
   window_stack_push(window, true);
 }
 
-void keynote_deinit(void) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window - Keynote deinit %p", window);
+void pdf_deinit(void) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window - PDF deinit %p", window);
   free(slide_progress_text);
   free(time_text);
   // save some stuff
@@ -101,7 +101,7 @@ void keynote_deinit(void) {
 }
 
 
-void keynote_update_ui(DictionaryIterator *iter) {
+void pdf_update_ui(DictionaryIterator *iter) {
   if (!has_loaded) {
     return;
   }
@@ -144,7 +144,7 @@ void keynote_update_ui(DictionaryIterator *iter) {
         sys_volume = (uint8_t)tuple->value->uint32;
         break;
       case KEY_APP:
-        //we know it's Keynote
+        //we know it's PDF
         break;
       default:
         break;
@@ -158,7 +158,7 @@ void keynote_update_ui(DictionaryIterator *iter) {
 
 static void update_main_text() {
 
-  snprintf(slide_progress_text, 20, "%d of %d", position, duration);
+  snprintf(slide_progress_text, 20, "%d", position);
   text_layer_set_text(main_text, slide_progress_text);
 }
 
@@ -171,6 +171,10 @@ static void decrementPosition() {
 static void incrementPosition() {
   if (position < duration) {
     position++;
+  }
+  else {
+    position++;
+    duration++;
   }
 }
 
@@ -203,12 +207,12 @@ static void handle_second_tick(struct tm *tick_time, TimeUnits units_changed)  {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
 static void send_request(char * command) {
-  send_command("Keynote", command);
+  send_command("System", command);
 }
 
 // Events
 static void back_single_click_handler(ClickRecognizerRef recognizer, void *context) {
-  keynote_deinit();
+  pdf_deinit();
   window_stack_pop(true);
 }
 
@@ -222,7 +226,7 @@ static void up_single_click_handler(ClickRecognizerRef recognizer, void *context
   if (controlling_volume) {
     send_request("volume_up");
   } else {
-    send_request("previous");
+    send_request("left");
     decrementPosition();
     update_main_text();
     update_progress_bar();
@@ -233,7 +237,7 @@ static void down_single_click_handler(ClickRecognizerRef recognizer, void *conte
   if (controlling_volume) {
     send_request("volume_down");
   } else {
-    send_request("next");
+    send_request("right");
     incrementPosition();
     update_main_text();
     update_progress_bar();
@@ -284,7 +288,7 @@ static void window_load(Window *window) {
   action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, action_icon_play);
 
   main_text = text_layer_create((GRect) { .origin = { 4, 44 }, .size = { bounds.size.w-30, 60 } });
-  text_layer_set_text(main_text, "No Slide Show Found");
+  text_layer_set_text(main_text, "PDF Slide Show");
   text_layer_set_text_alignment(main_text, GTextAlignmentLeft);
   text_layer_set_font(main_text, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_overflow_mode(main_text, GTextOverflowModeFill);
@@ -319,7 +323,7 @@ static void window_load(Window *window) {
 }
 
 static void window_unload(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window - Keynote window_unload %p", window);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Window - PDF window_unload %p", window);
   has_loaded = false;
 
   tick_timer_service_unsubscribe();
@@ -345,6 +349,7 @@ static void window_unload(Window *window) {
   action_bar_layer_destroy(action_bar);
 }
 
-void keynote_control() {
-  keynote_init();
+void pdf_control() {
+  pdf_init();
 }
+
